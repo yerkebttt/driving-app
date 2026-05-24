@@ -103,14 +103,14 @@ async function loadModel() {
 }
 
 // ── Preprocess ────────────────────────────────────────────────
+// NOTE: Normalization handled by Rescaling layer inside model
+// We pass raw pixel values (0-255) — model converts to -1..+1
 function preprocessFrame() {
   try {
     ctx.drawImage(video, 0, 0, 200, 66);
     return tf.tidy(() => {
       const t = tf.browser.fromPixels(canvas)
-                  .toFloat()
-                  .div(127.5)
-                  .sub(1.0)
+                  .toFloat()   // 0-255 raw → Rescaling layer handles the rest
                   .expandDims(0);
       return t;
     });
