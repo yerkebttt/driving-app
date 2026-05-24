@@ -13,9 +13,10 @@ let manualAngle  = 0;
 let recognition  = null;
 let animId       = null;
 
-let interventions   = 0;
-let startTime       = null;
-let steeringSmooth  = 0;
+let interventions       = 0;
+let interventionActive  = false;
+let startTime           = null;
+let steeringSmooth      = 0;
 let lastFrameTime   = performance.now();
 let frameCount      = 0;
 let fpsDisplay      = 0;
@@ -151,12 +152,16 @@ async function driveLoop() {
   let angle = 0;
 
   if (manualMode) {
-    // Human override
+    // Human override — count only ONCE per activation
     angle = manualAngle;
-    interventions++;
-    intVal.textContent = interventions;
+    if (!interventionActive) {
+      interventions++;
+      intVal.textContent = interventions;
+      interventionActive = true;
+    }
     document.body.classList.add('manual-active');
   } else {
+    interventionActive = false;
     document.body.classList.remove('manual-active');
     // AI prediction
     const tensor = preprocessFrame();
@@ -242,10 +247,11 @@ function updatePathVisualization(angle) {
 
 // ── Emergency Stop ────────────────────────────────────────────
 function emergencyStop() {
-  isRunning    = false;
-  manualMode   = false;
-  manualAngle  = 0;
-  steeringSmooth = 0;
+  isRunning          = false;
+  manualMode         = false;
+  manualAngle        = 0;
+  steeringSmooth     = 0;
+  interventionActive = false;
   cancelAnimationFrame(animId);
   document.body.classList.remove('manual-active');
   startBtn.innerHTML = '<span class="btn-icon">▶</span> START';
