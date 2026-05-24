@@ -75,7 +75,7 @@ async function startCamera() {
 // ── Model ─────────────────────────────────────────────────────
 async function loadModel() {
   try {
-    model = await tf.loadLayersModel('./tfjs_model/model.json');
+    model = await tf.loadGraphModel('./tfjs_graph/model.json');
 
     // Warm-up inference
     const dummy = tf.zeros([1, 66, 200, 3]);
