@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>DAVE-2 Edge AI · Self-Driving</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.2.0/dist/tf.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- SCANLINE OVERLAY -->
+  <div class="scanlines"></div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <span class="logo-dot"></span>
+      <span class="logo-text">DAVE<span class="accent">-2</span></span>
+    </div>
+    <div class="header-right">
+      <span class="badge" id="gpu-badge">CPU</span>
+      <span class="badge" id="model-badge">LOADING</span>
+    </div>
+  </header>
+
+  <!-- MAIN CAMERA FEED -->
+  <div class="camera-wrapper">
+    <video id="camera" autoplay playsinline muted></video>
+    <canvas id="canvas" width="200" height="66"></canvas>
+
+    <!-- HUD overlay on camera -->
+    <div class="hud-overlay">
+      <!-- Predicted path lines drawn by JS -->
+      <svg id="path-svg" width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <polygon id="path-poly" points="40,100 60,100 55,60 45,60" fill="rgba(0,255,160,0.18)" stroke="rgba(0,255,160,0.7)" stroke-width="0.5"/>
+        <line id="center-line" x1="50" y1="100" x2="50" y2="60" stroke="rgba(0,255,160,0.9)" stroke-width="0.8" stroke-dasharray="3,2"/>
+      </svg>
+
+      <!-- Corner brackets -->
+      <div class="corner tl"></div>
+      <div class="corner tr"></div>
+      <div class="corner bl"></div>
+      <div class="corner br"></div>
+
+      <!-- Status bar inside camera -->
+      <div class="cam-status">
+        <span id="cam-label">CAMERA FEED</span>
+        <span id="fps-display">0 FPS</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATUS BAR -->
+  <div id="status-bar">
+    <div class="status-dot" id="status-dot"></div>
+    <span id="status-text">Initialising system...</span>
+  </div>
+
+  <!-- METRICS GRID -->
+  <div class="metrics-grid">
+
+    <div class="metric-card">
+      <div class="metric-label">STEERING</div>
+      <div class="metric-value" id="angle-value">0.000</div>
+      <div class="steering-bar-wrap">
+        <div class="steering-track">
+          <div class="steering-needle" id="steering-needle"></div>
+          <div class="steering-center"></div>
+        </div>
+        <div class="steering-labels"><span>L</span><span>R</span></div>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-label">DIRECTION</div>
+      <div class="metric-value direction-val" id="direction-val">STRAIGHT</div>
+      <div class="direction-arrow" id="direction-arrow">↑</div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-label">AUTONOMY</div>
+      <div class="metric-value green" id="autonomy-val">100.0%</div>
+      <div class="mini-bar"><div class="mini-fill" id="autonomy-fill"></div></div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-label">INTERVENTIONS</div>
+      <div class="metric-value" id="intervention-val">0</div>
+      <div class="metric-sub" id="elapsed-val">0s elapsed</div>
+    </div>
+
+  </div>
+
+  <!-- CONTROL PANEL -->
+  <div class="control-panel">
+
+    <div class="control-row">
+      <button class="btn-main" id="start-btn" onclick="toggleDriving()">
+        <span class="btn-icon">▶</span> START
+      </button>
+      <button class="btn-voice" id="voice-btn" onclick="toggleVoice()">
+        <span class="btn-icon">🎤</span> VOICE
+      </button>
+    </div>
+
+    <div class="control-row manual-row">
+      <button class="btn-manual" id="left-btn">
+        ◀ LEFT
+      </button>
+      <button class="btn-stop" onclick="emergencyStop()">
+        ⬛ STOP
+      </button>
+      <button class="btn-manual" id="right-btn">
+        RIGHT ▶
+      </button>
+    </div>
+
+  </div>
+
+  <!-- VOICE STATUS -->
+  <div class="voice-panel" id="voice-panel">
+    <div class="voice-indicator" id="voice-indicator">
+      <span class="pulse-ring"></span>
+      <span class="mic-icon">🎤</span>
+    </div>
+    <div class="voice-info">
+      <div class="voice-status-text" id="voice-status-text">Voice OFF</div>
+      <div class="voice-heard" id="voice-heard">Say: LEFT · RIGHT · STOP · GO</div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
