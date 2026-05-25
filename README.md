@@ -105,7 +105,7 @@ $$\text{autonomy} = \left(1 - \frac{\text{interventions} \times 6}{\text{elapsed
 | Component | Technology |
 |---|---|
 | Model Training | Python, TensorFlow/Keras, Google Colab (T4 GPU) |
-| Model Format | TensorFlow.js (browser-compatible) |
+| Model Format | TensorFlow.js Graph Model (browser-compatible) |
 | Edge Deployment | iPhone Safari, WebGL acceleration |
 | Voice Control | Web Speech API (`webkitSpeechRecognition`) |
 | Dataset | Udacity Self-Driving Car Dataset (8,036 images) |
@@ -122,7 +122,7 @@ driving-app/
 ├── style.css           # Dark HUD styling
 ├── app.js              # TF.js inference + voice control logic
 │
-└── tfjs_model/
+└── tfjs_graph/
     ├── model.json      # Model architecture
     └── group1-shard1of1.bin   # Trained weights (~985 KB)
 ```
